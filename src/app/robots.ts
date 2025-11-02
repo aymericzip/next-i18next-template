@@ -42,3 +42,4 @@ export default function robots(): MetadataRoute.Robots {
 		sitemap: absoluteUrl(defaultLocale, "/sitemap.xml"), // Sitemap location
 	};
 }
+

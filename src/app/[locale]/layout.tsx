@@ -1,91 +1,82 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
-import LocaleSwitcher from "@/components/LocaleSwitcher";
+import { initI18next } from "@/app/i18n/server";
 import {
-	absoluteUrl,
-	defaultLocale,
-	isRtl,
-	type Locale,
-	locales,
-	localizedPath,
+  absoluteUrl,
+  defaultLocale,
+  isRtl,
+  type Locale,
+  locales,
+  localizedPath,
 } from "@/i18n.config";
 import "@/app/globals.css";
 
-// Disable dynamic params - all locales must be known at build time
-// This ensures static generation for all locale routes
-export const dynamicParams = false;
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-/**
- * Generate static params for all locales at build time
- * Next.js will pre-render pages for each locale returned here
- * Example: [{ locale: "en" }, { locale: "fr" }]
- */
-export function generateStaticParams() {
-	return locales.map((locale) => ({ locale }));
-}
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
-/**
- * Generate SEO metadata for the root layout
- */
 export async function generateMetadata({
-	params,
+  params,
 }: {
-	params: { locale: string };
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
-	const { locale } = params;
+  const { locale } = await params;
 
-	// Create hreflang mapping for all locales
-	const languages = Object.fromEntries(
-		locales.map((locale) => [locale, localizedPath(locale, "/")]),
-	);
+  const i18n = await initI18next(locale, ["common"] as const);
+  const resolvedLocale = i18n.language ?? defaultLocale;
+  const tCommon = i18n.getFixedT(resolvedLocale, "common");
 
-	return {
-		title: {
-			default:
-				locale === "fr" ? "Application Next.js i18n" : "Next.js i18n App",
-			template: `%s | ${locale === "fr" ? "Application Next.js i18n" : "Next.js i18n App"}`,
-		},
-		description:
-			locale === "fr"
-				? "Exemple d'application Next.js avec internationalisation utilisant i18next"
-				: "Example Next.js application with internationalization using i18next",
-		alternates: {
-			canonical: absoluteUrl(locale, "/"),
-			languages: {
-				...languages,
-				"x-default": absoluteUrl(defaultLocale, "/"),
-			},
-		},
-	};
+  const languages = Object.fromEntries(
+    locales.map((locale) => [locale, localizedPath(locale, "/")])
+  );
+
+  return {
+    title: {
+      default: tCommon("appTitle"),
+      template: `%s | ${tCommon("appTitle")}`,
+    },
+    description: tCommon("appDescription"),
+    alternates: {
+      canonical: absoluteUrl(locale, "/"),
+      languages: {
+        ...languages,
+        "x-default": absoluteUrl(defaultLocale, "/"),
+      },
+    },
+  };
 }
 
-/**
- * Root layout component that handles locale-specific HTML attributes
- * Sets the lang attribute and text direction (ltr/rtl) based on locale
- */
-export default function LocaleLayout({
-	children,
-	params,
+// Pre-generate static pages for all locales at build time (SSG)
+// This improves performance and SEO
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
+  children,
+  params,
 }: {
-	children: ReactNode;
-	params: { locale: string };
+  children: ReactNode;
+  params: Promise<{ locale: Locale }>;
 }) {
-	// Validate locale from URL params
-	// If invalid locale is provided, fall back to default locale
-	const locale: Locale = (locales as readonly string[]).includes(params.locale)
-		? (params.locale as Locale)
-		: defaultLocale;
+	const { locale } = await params;
+	const resolvedLocale = locale ?? defaultLocale;
+  
 
-	// Determine text direction based on locale
-	// RTL languages like Arabic need dir="rtl" for proper text rendering
-	const dir = isRtl(locale) ? "rtl" : "ltr";
-
-	return (
-		<html lang={locale} dir={dir} className="antialiased">
-			<body className="font-sans">
-				<LocaleSwitcher />
-				{children}
-			</body>
-		</html>
-	);
+  return (
+    <html lang={resolvedLocale} dir={isRtl(resolvedLocale as Locale) ? "rtl" : "ltr"}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {children}
+      </body>
+    </html>
+  );
 }

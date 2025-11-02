@@ -25,9 +25,7 @@ const ServerComponent = ({ t, locale, count }: ServerComponentProps) => {
       <div className="flex flex-col items-center gap-2">
         <span className="text-xl font-semibold text-white">{t("counter.label")}</span>
         <span className="text-sm opacity-80 italic">
-          {locale === "fr" 
-            ? "(Rendu côté serveur)" 
-            : "(Server-side rendered)"}
+         {t("counter.description")}
         </span>
       </div>
     </div>

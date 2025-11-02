@@ -3,7 +3,7 @@
   "description": "About page description",
   "counter": {
     "label": "Counter",
-    "increment": "Increment"
+    "increment": "Increment",
+    "description": "(Server-side rendered)"
   }
 }
-

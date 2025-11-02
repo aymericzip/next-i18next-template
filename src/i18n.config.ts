@@ -1,6 +1,6 @@
 // Define supported locales as a const array for type safety
 // The 'as const' assertion makes TypeScript infer literal types instead of string[]
-export const locales = ["en", "fr"] as const;
+export const locales = ["en", "fr", "es"] as const;
 
 // Extract the Locale type from the locales array
 // This creates a union type: "en" | "fr"
@@ -30,3 +30,12 @@ export function absoluteUrl(locale: string, path: string) {
   return `${ORIGIN}${localizedPath(locale, path)}`;
 }
 
+
+export function getCookie(locale: Locale) {
+  return [
+    `NEXT_LOCALE=${locale}`,
+    "Path=/",
+    `Max-Age=${60 * 60 * 24 * 365}`, // 1 year
+    "SameSite=Lax",
+  ].join("; ");
+}

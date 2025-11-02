@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useMemo } from "react";
-import { defaultLocale, type Locale, locales } from "@/i18n.config";
+import { defaultLocale, getCookie, type Locale, locales } from "@/i18n.config";
 
 export default function LocaleSwitcher() {
 	const params = useParams();
@@ -12,7 +12,9 @@ export default function LocaleSwitcher() {
 
 	const getLocaleLabel = (locale: Locale): string => {
 		try {
-			const displayNames = new Intl.DisplayNames([locale], { type: "language" });
+			const displayNames = new Intl.DisplayNames([locale], {
+				type: "language",
+			});
 			return displayNames.of(locale) ?? locale.toUpperCase();
 		} catch {
 			return locale.toUpperCase();
@@ -32,38 +34,34 @@ export default function LocaleSwitcher() {
 		return pathname;
 	}, [pathname]);
 
-	const hrefForLocale = (nextLocale: Locale) => {
-		if (nextLocale === defaultLocale) {
-			return basePath;
-		}
-		return basePath === "/" ? `/${nextLocale}` : `/${nextLocale}${basePath}`;
-	};
-
 	return (
-		<nav
-			aria-label="Language selector"
-			className="p-4 flex justify-center items-center"
-		>
-			<ul className="list-none flex gap-4 p-0 m-0 bg-gray-100 rounded-lg px-4 py-2">
-				{(locales as readonly Locale[]).map((locale) => (
-					<li key={locale}>
+		<nav aria-label="Language selector" className="relative">
+			<div className="flex items-center gap-2 p-2 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
+				{(locales as readonly Locale[]).map((locale) => {
+					const isActive = locale === activeLocale;
+					// Build the href based on whether it's the default locale
+					const href =
+						locale === defaultLocale ? basePath : `/${locale}${basePath}`;
+					return (
 						<Link
-							href={hrefForLocale(locale)}
-							aria-current={locale === activeLocale ? "page" : undefined}
-							className={`
-                no-underline px-4 py-2 rounded-md font-medium transition-all duration-200
-                ${
-									locale === activeLocale
-										? "bg-blue-600 text-white hover:bg-blue-700"
-										: "text-gray-700 hover:bg-gray-300"
-								}
-              `}
+							key={locale}
+							href={href}
+							aria-current={isActive ? "page" : undefined}
+							onClick={() => {
+								document.cookie = getCookie(locale);
+							}}
+							className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+								isActive
+									? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 shadow-sm"
+									: "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+							}`}
 						>
-							{getLocaleLabel(locale)}
+							<span className="hidden sm:inline">{getLocaleLabel(locale)}</span>
+							<span className="sm:hidden">{locale.toUpperCase()}</span>
 						</Link>
-					</li>
-				))}
-			</ul>
+					);
+				})}
+			</div>
 		</nav>
 	);
 }

@@ -24,7 +24,7 @@ const ClientComponent = () => {
       <p className="text-5xl font-bold text-white m-0">{numberFormat.format(count)}</p>
       <button
         type="button"
-        className="px-8 py-3 bg-white text-[#667eea] border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 shadow-lg hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
         aria-label={t("counter.label")}
         onClick={() => setCount((c) => c + 1)}
       >

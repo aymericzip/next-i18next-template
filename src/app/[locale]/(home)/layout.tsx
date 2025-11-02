@@ -22,13 +22,13 @@ export async function generateMetadata({
 
 	// Dynamically import translation file for this locale
 	// Used to get translated title and description for metadata
-	const messages = (await import(`@/locales/${resolvedLocale}/about.json`)).default;
+	const messages = (await import(`@/locales/${resolvedLocale}/home.json`)).default;
 
 	// Create hreflang mapping for all locales
 	// Helps search engines understand language alternatives
 	// Format: { "en": "/about", "fr": "/fr/about" }
 	const languages = Object.fromEntries(
-		locales.map((locale) => [locale, localizedPath(locale, "/about")]),
+		locales.map((locale) => [locale, localizedPath(locale, "/home")]),
 	);
 
 	return {
@@ -36,17 +36,17 @@ export async function generateMetadata({
 		description: messages.description,
 		alternates: {
 			// Canonical URL for this locale version
-			canonical: absoluteUrl(locale, "/about"),
+			canonical: absoluteUrl(locale, "/home"),
 			// Language alternatives for SEO (hreflang tags)
 			// "x-default" specifies the default locale version
 			languages: {
 				...languages,
-				"x-default": absoluteUrl(defaultLocale, "/about"),
+				"x-default": absoluteUrl(defaultLocale, "/home"),
 			},
 		},
 	};
 }
 
-export default function AboutLayout({ children }: { children: ReactNode }) {
+export default function HomeLayout({ children }: { children: ReactNode }) {
 	return children;
 }

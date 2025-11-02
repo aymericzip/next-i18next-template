@@ -20,8 +20,8 @@ export async function getCurrentLocale(): Promise<Locale> {
 	return headerLocale ?? defaultLocale;
 }
 
-export async function subscribeToNewsletter(formData: FormData) {
+export async function stuffFromServer(formData: FormData) {
 	const locale = await getCurrentLocale();
 	// Use the locale for localized side effects (emails, CRM, etc.)
-	console.log(`Subscribing ${formData.get("email")} with locale ${locale}`);
+	console.log(`Stuff from server with locale ${locale}`);
 }
