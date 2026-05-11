@@ -1,0 +1,16 @@
+# https://github.com/yesglot/yesglot.toml
+[yesglot]
+version = 1
+
+[project]
+id = "019e182e-056f-72bd-a67a-df241d15bf92"
+technology = "react/i18next"
+tracked_branch = "main"
+
+[source_language]
+tag = "en"
+path = "src/locales/en.json"
+
+[[target_language]]
+tag = "fr"
+path = "src/locales/fr.json"
