@@ -37,7 +37,6 @@ export async function initI18next(
 			interpolation: { escapeValue: false }, // Don't escape HTML (React handles XSS protection)
 			react: { useSuspense: false }, // Disable Suspense for SSR compatibility
 			returnNull: false, // Return empty string instead of null for missing keys
-			initImmediate: false, // Defer initialization until resources are loaded (faster SSR)
 		});
 
 	return i18n;

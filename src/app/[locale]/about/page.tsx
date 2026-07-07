@@ -16,7 +16,7 @@ import type { Namespace } from "@/i18n.namespaces";
 export default async function AboutPage({
   params,
 }: {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 }) {
   // Define which translation namespaces this page needs
   // Using 'as const' for type safety and better autocomplete

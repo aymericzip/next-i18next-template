@@ -11,7 +11,7 @@
   "dependencies": {
     "i18next": "^26.3.4",
     "i18next-resources-to-backend": "^1.2.1",
-    "intlayer": "9.0.0-canary.12",
+    "intlayer": "canary",
     "next": "16.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7",

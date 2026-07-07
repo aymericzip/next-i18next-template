@@ -14,7 +14,7 @@ import type { Namespace } from "@/i18n.namespaces";
 export default async function HomePage({
   params,
 }: {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
   
